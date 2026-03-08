@@ -3,3 +3,5 @@ TODO:
     -> Create entities
     -> Create dtos(auth)
     -> Config In mail(service)
+    -> UserService
+    -> AuthService

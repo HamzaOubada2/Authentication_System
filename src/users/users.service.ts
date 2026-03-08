@@ -86,6 +86,15 @@ export class UserService {
         user.roles = [role];
         return this.userRepo.save(user);
     }
+
+    //------------------FindAllWithResetToken-------------------------
+    async FindAllWithResetToken(): Promise<User[]> {
+        return this.userRepo
+            .createQueryBuilder('user')
+            .where('user.resetToken IS NOT NULL')
+            .andWhere('user.resetTokenExp > :now', { now: new Date() })
+            .getMany()
+    }
 }
 
 /*
