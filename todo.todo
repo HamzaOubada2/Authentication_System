@@ -8,3 +8,4 @@ TODO:
     -> Guards & decorators(roles,permissions,Jwt_auth)
     -> Interceptors & Exception Filter
     -> main.ts global interceptors
+    -> Auth Module & Controller

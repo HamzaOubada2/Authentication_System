@@ -15,6 +15,16 @@ export class UserService {
         private roleRepo: Repository<Role>
     ) { }
 
+    //----------------------------------------
+    async findAll(): Promise<User[]> {
+        return this.userRepo.find();
+    }
+
+    async deleteUser(id: number): Promise<{ message: string }> {
+        await this.userRepo.delete(id);
+        return { message: 'User deleted successfully' };
+    }
+
     //----------- Find ---------------------------------------------
     async findByEmail(email: string): Promise<User | null> {
         return this.userRepo.findOne({ where: { email } })
