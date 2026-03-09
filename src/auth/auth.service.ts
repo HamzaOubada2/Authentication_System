@@ -78,6 +78,11 @@ export class AuthService {
 
         return tokens;
     }
+    //------------------Logout
+    async logout(userId: number) {
+        await this.userService.updateRefreshToken(userId, undefined);
+        return { message: 'Logged out successfully' };
+    }
 
     // ---------- REFRESH TOKENS---------------------------------
     async refresh(userId: number, refreshToken: string) {
@@ -123,35 +128,66 @@ export class AuthService {
     }
 
     // -------------------- RESET PASSWORD -------------------------------------------
+    /*     async resetPassword(dto: ResetPasswordDto) {
+            // 1- find user have reset token
+            // This get all users have token + not expired
+            const users = await this.userService.FindAllWithResetToken();
+            const user = await Promise.all(
+                // Make map on each user and compare with  token of user & token hashed
+                users.map(async (u) => {
+                    const match = await bcrypt.compare(dto.token, u.resetToken);
+                    return match ? u : null;
+                })
+            ).then((results) => results.find(Boolean));
+            if (!user) throw new BadRequestException('Invalid or expire reset token');
+    
+            // 2- check token expiry
+            if (new Date() > user.resetTokenExpiration)
+                throw new BadRequestException('Reset token has expired')
+    
+            // 3- comare token with hashed one in DB
+            const tokenMatch = await bcrypt.compare(dto.token, user.resetToken);
+            if (!tokenMatch) throw new BadRequestException('Invalid or expired reset token');
+    
+            // 4- hash new Password
+            const hashPassword = await bcrypt.hash(dto.newPassword, 10);
+    
+            // 5- update password + clear reset token
+            await this.userService.updatePassword(user.id, hashPassword);
+            return { message: 'Password reset successfully! You can now Login' }
+        } */
+
     async resetPassword(dto: ResetPasswordDto) {
-        // 1- find user have reset token
-        // This get all users have token + not expired
-        const users = await this.userService.FindAllWithResetToken();
-        const user = await Promise.all(
-            // Make map on each user and compare with  token of user & token hashed
-            users.map(async (u) => {
-                const match = await bcrypt.compare(dto.token, u.resetToken);
-                return match ? u : null;
-            })
-        ).then((results) => results.find(Boolean));
-        if (!user) throw new BadRequestException('Invalid or expire reset token');
+        try { // ← wrap in try/catch
+            const users = await this.userService.FindAllWithResetToken();
+            console.log('USERS WITH RESET TOKEN:', users); // ← ADD
 
-        // 2- check token expiry
-        if (new Date() > user.resetTokenExpiration)
-            throw new BadRequestException('Reset token has expired')
+            const user = await Promise.all(
+                users.map(async (u) => {
+                    const match = await bcrypt.compare(dto.token, u.resetToken);
+                    return match ? u : null;
+                })
+            ).then((results) => results.find(Boolean));
 
-        // 3- comare token with hashed one in DB
-        const tokenMatch = await bcrypt.compare(dto.token, user.resetToken);
-        if (!tokenMatch) throw new BadRequestException('Invalid or expired reset token');
+            console.log('MATCHED USER:', user); // ← ADD
 
-        // 4- hash new Password
-        const hashPassword = await bcrypt.hash(dto.newPassword, 10);
+            if (!user) throw new BadRequestException('Invalid or expire reset token');
 
-        // 5- update password + clear reset token
-        await this.userService.updatePassword(user.id, hashPassword);
-        return { message: 'Password reset successfully! You can now Login' }
+            if (new Date() > user.resetTokenExpiration)
+                throw new BadRequestException('Reset token has expired')
+
+            const tokenMatch = await bcrypt.compare(dto.token, user.resetToken);
+            if (!tokenMatch) throw new BadRequestException('Invalid or expired reset token');
+
+            const hashPassword = await bcrypt.hash(dto.newPassword, 10);
+            await this.userService.updatePassword(user.id, hashPassword);
+            return { message: 'Password reset successfully! You can now Login' }
+
+        } catch (e) {
+            console.error('RESET PASSWORD ERROR:', e.message); // ← ADD
+            throw e;
+        }
     }
-
     // --------------------- VERIFY ACCESS TOKEN (used by guard)-----------------------------
     async verifyAccessToken(token: string) {
         try {

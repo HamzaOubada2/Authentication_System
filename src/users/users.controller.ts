@@ -17,6 +17,7 @@ export class UsersController {
     // Get My Profile
     @Get('me')
     getMe(@CurrentUser() user: any) {
+        console.log('USER FROM TOKEN:', user);
         return this.userService.findById(user.sub)
     }
 

@@ -1,7 +1,10 @@
-import { CanActivate, ExecutionContext, ForbiddenException } from "@nestjs/common";
+import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
 import { PERMISSIONS_KEY } from "../decorators/permissions.decorator";
+
+
+@Injectable()
 export class PermissionsGuard implements CanActivate {
     constructor(private reflector: Reflector) { }
 

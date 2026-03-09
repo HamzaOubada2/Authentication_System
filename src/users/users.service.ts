@@ -102,7 +102,7 @@ export class UserService {
         return this.userRepo
             .createQueryBuilder('user')
             .where('user.resetToken IS NOT NULL')
-            .andWhere('user.resetTokenExp > :now', { now: new Date() })
+            .andWhere('user.resetTokenExpiration > :now', { now: new Date() }) // ← fix column name
             .getMany()
     }
 }
