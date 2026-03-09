@@ -1,11 +1,19 @@
 TODO:
-    -> Config Database
-    -> Create entities
-    -> Create dtos(auth)
-    -> Config In mail(service)
-    -> UserService
-    -> AuthService
-    -> Guards & decorators(roles,permissions,Jwt_auth)
+    -> Config Database (.env + app.module.ts)
+    -> Create entities (User, Role, Permission + relations M:M)
+    -> Create dtos (register, login, forgot-password, reset-password)
+    -> Config Mail service (Mailtrap + nodemailer transporter)
+    -> UsersService (find, create, update, assignDefaultRole)
+    -> AuthService (register, verifyEmail, login, refresh, logout, forgotPassword, resetPassword)
+    -> Guards & Decorators
+          - JwtAuthGuard (verify token → attach req.user)
+          - RolesGuard (Reflector → check roles)
+          - PermissionsGuard (Reflector → check permissions)
+          - @Roles() @Permissions() @CurrentUser()
     -> Interceptors & Exception Filter
-    -> main.ts global interceptors
-    -> Auth Module & Controller
+          - LoggingInterceptor (log method + time)
+          - ResponseInterceptor (wrap all responses)
+          - HttpExceptionFilter (standard error shape)
+    -> main.ts (ValidationPipe + global interceptors + filter + CORS)
+    -> Auth Module & Controller (all endpoints)
+    -> Users Module & Controller (me, getAllUsers, deleteUser)
