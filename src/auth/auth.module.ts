@@ -1,15 +1,14 @@
+// src/auth/auth.module.ts
 import { Module } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
-import { UserModule } from "src/users/users.module";
-import { MailModule } from "src/mail/mail.module";
+import { MailModule } from "../mail/mail.module";
 import { JwtModule } from "@nestjs/jwt";
-
-
+import { UsersModule } from "src/users/users.module";
 
 @Module({
     imports: [
-        UserModule,
+        UsersModule,
         MailModule,
         JwtModule.register({})
     ],
