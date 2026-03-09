@@ -29,6 +29,11 @@ async function bootstrap() {
 
   // GLOBAL EXCEPTION FILTER
   app.useGlobalFilters(new HttpExceptionFilter()); // handle All Errors
+
+  app.enableCors({
+    origin: 'http://localhost:3001',
+    credentials: true,
+  });
   await app.listen(3000);
   console.log(`Server running on http://localhost:3000/api`)
 }
