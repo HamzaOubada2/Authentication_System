@@ -12,23 +12,25 @@ import { AuthService } from '../auth.service';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+    // Help me in debuggin
     private logger = new Logger('JwtAuthGuard');
 
     constructor(
-        @Inject(forwardRef(() => AuthService)) // ← ADD THIS
+        @Inject(forwardRef(() => AuthService))
         private authService: AuthService,
     ) { }
 
-    async canActivate(context: ExecutionContext): Promise<boolean> {
+    async canActivate(context: ExecutionContext): Promise<boolean> { // canActive => true or false => enter to endPoint or not
         const request = context.switchToHttp().getRequest();
         const authHeader = request.headers['authorization'];
+        // Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6...
 
         this.logger.log('Auth Header: ' + authHeader);
 
         if (!authHeader || !authHeader.startsWith('Bearer '))
             throw new UnauthorizedException('No token provided');
 
-        const token = authHeader.split(' ')[1];
+        const token = authHeader.split(' ')[1]; // extract token
 
         try {
             const payload = await this.authService.verifyAccessToken(token);
@@ -41,3 +43,21 @@ export class JwtAuthGuard implements CanActivate {
         }
     }
 }
+
+/*
+    WorkFlow:
+    Client Request
+    ↓
+    Authorization Header
+    ↓
+    JwtAuthGuard
+    ↓
+    Extract Token
+    ↓
+    verifyAccessToken()
+    ↓
+    Valid ?
+    ↓
+    Yes → Controller
+    No  → 401
+*/

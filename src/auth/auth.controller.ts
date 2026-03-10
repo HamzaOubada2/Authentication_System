@@ -31,7 +31,7 @@ export class AuthController {
         return this.authService.refresh(body.userId, body.refreshToken)
     }
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard) // For make logout you must be already login
     @Post('logout')
     logout(@CurrentUser() user: any) {
         return this.authService.logout(user.sub)

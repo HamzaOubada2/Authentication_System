@@ -78,8 +78,12 @@ export class MailService {
 
 /* 
     MailService:
-                -> sendVerificationEmail() //Sends lint to verify account
+                -> sendVerificationEmail() //Sends link to verify account
                 -> sendResetPasswordEmail() // sends link to reset password
 
-    !💡 Both emails send a token in the URL — the user clicks it → our API reads the token → validates it → takes action.
+    !💡 Both emails send a token in the URL 
+    — the user clicks it
+    → our API reads the token
+    → validates it
+    → takes action.
 */

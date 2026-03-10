@@ -107,7 +107,7 @@ export class AuthService {
         const user = await this.userService.findByEmail(dto.email);
 
         if (!user)
-            return { message: 'If This email exists, a reset link has been sent.' }
+            return { message: 'THis User Not Found!' }
 
         // 1- Generate reset Token
         const resetToken = crypto.randomBytes(32).toString('hex');
@@ -158,9 +158,8 @@ export class AuthService {
         } */
 
     async resetPassword(dto: ResetPasswordDto) {
-        try { // ← wrap in try/catch
+        try {
             const users = await this.userService.FindAllWithResetToken();
-            console.log('USERS WITH RESET TOKEN:', users); // ← ADD
 
             const user = await Promise.all(
                 users.map(async (u) => {
@@ -169,7 +168,6 @@ export class AuthService {
                 })
             ).then((results) => results.find(Boolean));
 
-            console.log('MATCHED USER:', user); // ← ADD
 
             if (!user) throw new BadRequestException('Invalid or expire reset token');
 
@@ -184,7 +182,6 @@ export class AuthService {
             return { message: 'Password reset successfully! You can now Login' }
 
         } catch (e) {
-            console.error('RESET PASSWORD ERROR:', e.message); // ← ADD
             throw e;
         }
     }
@@ -204,13 +201,17 @@ export class AuthService {
     private async generateTokens(id: number, email: string, roles: any[]) {
         //Exctract Name of roles
         const roleNames = roles.map((r) => r.name);
-        //extract permissions
+        //extract permissions related with this user
         // flatMap => Collects permissions in one array
         /*
             [
-                "create_user",
-                "delete_user",
-                "edit_post"
+                {
+                    name: "admin",
+                    permissions: [
+                        { name: "create_user" },
+                        { name: "delete_user" }
+                        ]
+                }
             ]
         */
         const permissions = roles.flatMap((role) =>

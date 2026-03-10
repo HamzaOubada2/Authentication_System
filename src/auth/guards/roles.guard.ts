@@ -23,11 +23,12 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     // Search for roles metadata in the route handler and controller
     // Example: @Roles('admin') => roles = ['admin']
-    const requiredRoles = this.reflector.getAllAndOverride<string[]>(
+    const requiredRoles = this.reflector.getAllAndOverride<string[]>( // Hada howa li jana Men decorator
       ROLES_KEY,
       [context.getHandler(), context.getClass()]
     );
 
+    // If not have any things like @roles passs 
     if (!requiredRoles) return true;
 
     const request = context.switchToHttp().getRequest();

@@ -75,7 +75,7 @@ export class UserService {
     async updatePassword(id: number, hashedPassword: string) {
         await this.userRepo.update(id, {
             password: hashedPassword,
-            resetToken: undefined, //Clear Token after reset
+            resetToken: undefined, //null //Clear Token after reset
             resetTokenExpiration: undefined
         })
     }
@@ -98,11 +98,12 @@ export class UserService {
     }
 
     //------------------FindAllWithResetToken-------------------------
+    //!!!!!!!!!!Exp
     async FindAllWithResetToken(): Promise<User[]> {
         return this.userRepo
             .createQueryBuilder('user')
             .where('user.resetToken IS NOT NULL')
-            .andWhere('user.resetTokenExpiration > :now', { now: new Date() }) // ← fix column name
+            .andWhere('user.resetTokenExpiration > :now', { now: new Date() })
             .getMany()
     }
 }

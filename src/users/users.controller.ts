@@ -16,7 +16,7 @@ export class UsersController {
 
     // Get My Profile
     @Get('me')
-    getMe(@CurrentUser() user: any) {
+    getMe(@CurrentUser() user: any) { //CurrentUser ==> User Logged
         console.log('USER FROM TOKEN:', user);
         return this.userService.findById(user.sub)
     }
@@ -33,7 +33,7 @@ export class UsersController {
     //Delete User (admin only)
     @Delete(':id')
     @Roles('admin')
-    @Permissions('delete:user')
+    @Permissions('delete:users')
     deleteUser(@Param('id') id: number) {
         return this.userService.deleteUser(id);
     }
