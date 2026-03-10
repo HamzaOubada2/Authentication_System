@@ -98,7 +98,7 @@ export class UserService {
     }
 
     //------------------FindAllWithResetToken-------------------------
-    //!!!!!!!!!!Exp
+    // this fct return all users want to reset password and the time not expired
     async FindAllWithResetToken(): Promise<User[]> {
         return this.userRepo
             .createQueryBuilder('user')
